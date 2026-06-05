@@ -1,0 +1,15 @@
+README.md
+pyproject.toml
+src/movie_recommender/__init__.py
+src/movie_recommender/artifact.py
+src/movie_recommender/download_data.py
+src/movie_recommender/paths.py
+src/movie_recommender/recommend.py
+src/movie_recommender/spark_utils.py
+src/movie_recommender/train_als.py
+src/spark_movie_recommender.egg-info/PKG-INFO
+src/spark_movie_recommender.egg-info/SOURCES.txt
+src/spark_movie_recommender.egg-info/dependency_links.txt
+src/spark_movie_recommender.egg-info/requires.txt
+src/spark_movie_recommender.egg-info/top_level.txt
+tests/test_paths.py

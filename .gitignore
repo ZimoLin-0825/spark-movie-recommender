@@ -1,0 +1,21 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Local data and model artifacts are reproducible.
+data/raw/
+data/processed/
+models/
+
+# Spark/Java local noise.
+spark-warehouse/
+metastore_db/
+derby.log
+hs_err_pid*
+
+# Keep reports, but ignore Spark write markers.
+reports/**/_SUCCESS
+reports/**/*.crc
+reports/*.log

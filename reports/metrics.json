@@ -1,0 +1,14 @@
+{
+  "ratings_count": 100836,
+  "train_count": 80578,
+  "test_count": 20258,
+  "rank": 8,
+  "max_iter": 3,
+  "reg_param": 0.12,
+  "rmse": 0.881839862165168,
+  "precision_at_10": 0.00016891891891891893,
+  "recall_at_10": 0.00010267994660642776,
+  "users_evaluated": 592,
+  "relevant_test_items": 9739,
+  "hits_at_k": 1
+}

@@ -1,0 +1,169 @@
+# Spark Movie Recommendation System
+
+An end-to-end movie recommendation project built with **PySpark**, **Spark MLlib
+ALS**, and a lightweight **Streamlit** demo. It trains on the MovieLens
+`ml-latest-small` dataset, evaluates recommendation quality, and serves
+user-specific top-N movie recommendations.
+
+This repository is designed as a DS practical / GitHub portfolio project for a
+course module such as **Spark Hw2 Movie recommendation system**.
+
+## Highlights
+
+- Downloads MovieLens data automatically.
+- Trains a collaborative filtering model with Spark MLlib ALS.
+- Evaluates the model with RMSE, Precision@K, and Recall@K.
+- Saves a Windows-friendly ALS factor artifact.
+- Provides both a command-line recommender and a Streamlit web demo.
+- Includes a short system design note for recommendation-system interviews.
+
+## Demo
+
+Run the web app:
+
+```powershell
+python -m streamlit run app/streamlit_app.py
+```
+
+Then open the local URL printed by Streamlit, usually:
+
+```text
+http://localhost:8501
+```
+
+The app lets a user choose a MovieLens user ID and view personalized movie
+recommendations with titles, genres, and model scores.
+
+## Tech Stack
+
+- Python 3.10+
+- Java 17+
+- PySpark 4.x
+- Spark MLlib ALS
+- Streamlit
+- MovieLens `ml-latest-small`
+
+## Repository Structure
+
+```text
+spark-movie-recommender/
+  app/
+    streamlit_app.py
+  docs/
+    system_design.md
+  src/
+    movie_recommender/
+      artifact.py
+      download_data.py
+      paths.py
+      recommend.py
+      spark_utils.py
+      train_als.py
+  tests/
+    test_paths.py
+  reports/
+    metrics.json
+    run_summary.md
+    sample_recommendations.csv
+  pyproject.toml
+  requirements.txt
+  README.md
+```
+
+## Setup
+
+Clone the repository and install the package:
+
+```powershell
+python -m pip install -e ".[dev]"
+```
+
+If you prefer `requirements.txt`:
+
+```powershell
+python -m pip install -r requirements.txt
+```
+
+## Reproduce the Project
+
+Download MovieLens:
+
+```powershell
+python -m movie_recommender.download_data
+```
+
+Train ALS:
+
+```powershell
+python -m movie_recommender.train_als --rank 8 --max-iter 3 --reg-param 0.12 --top-k 10 --top-n 10
+```
+
+Generate recommendations from the command line:
+
+```powershell
+python -m movie_recommender.recommend --user-id 1 --top-n 10
+```
+
+Launch the Streamlit demo:
+
+```powershell
+python -m streamlit run app/streamlit_app.py
+```
+
+## Current Results
+
+First local run on MovieLens `ml-latest-small`:
+
+| Metric | Value |
+| --- | ---: |
+| Ratings | 100,836 |
+| Train rows | 80,578 |
+| Test rows | 20,258 |
+| RMSE | 0.8818 |
+| Precision@10 | 0.00017 |
+| Recall@10 | 0.00010 |
+
+The RMSE is the most useful baseline metric here. Precision@K and Recall@K are
+very sparse because the held-out relevant movies are a tiny subset of the full
+catalog.
+
+## Model Design
+
+The project uses ALS to factorize the sparse user-movie rating matrix:
+
+- Input: `(userId, movieId, rating)`
+- Learned output: user factors and movie factors
+- Recommendation score: dot product between user and movie factor vectors
+- Top-N ranking: highest predicted scores among movies the user has not rated
+
+For a production-scale recommendation system, this baseline can be extended into
+a two-stage design:
+
+1. Candidate generation with ALS, item-based collaborative filtering, or ANN.
+2. Ranking with richer user, item, and context features.
+
+See [`docs/system_design.md`](docs/system_design.md) for the system-design
+discussion.
+
+## Git Notes
+
+Large or reproducible artifacts are intentionally ignored:
+
+- `data/raw/`
+- `data/processed/`
+- `models/`
+
+Commit the source code, README, system design note, tests, and small report
+outputs. The data and model can be recreated with the commands above.
+
+On Windows, Spark's native model-save path can require Hadoop `winutils.exe`.
+This project avoids that setup burden by saving a Python-managed
+`models/als_factors.json` artifact from Spark ALS user/item factors.
+
+## Future Improvements
+
+- Add popularity and genre-based cold-start recommendations.
+- Add genre filters in the Streamlit app.
+- Compare ALS with item-based collaborative filtering.
+- Add hyperparameter tuning for rank, regularization, and iterations.
+- Add a two-tower neural recommender as a second-stage model.
